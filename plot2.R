@@ -1,10 +1,19 @@
+# download file to the current working directory
+download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip",
+              destfile="exdata_data_household_power_consumption.zip")
+
+# unzip the downloaded file to the current working directory
+unzip("exdata_data_household_power_consumption.zip")  
+
+
 # read "household_power_consumption.txt" file in working directory
-dat <- read.table("household_power_consumption.txt", header = TRUE, sep = ";")
+# for dates "1/2/2007" and "2/2/2007"
+dat <- read.table(pipe('grep "^[1-2]/2/2007" "household_power_consumption.txt"'),
+                  header=F, sep=';')
+colnames(dat) <-names(read.table('household_power_consumption.txt', 
+                                 header=TRUE,sep=";",nrows=1))
 
-# subset dates "1/2/2007" and "2/2/2007"
-dat <- subset(dat, Date %in% c("1/2/2007","2/2/2007"))
-
-# add fields of date and datetime format
+# add field with datetime format
 dat$DateTime <- as.POSIXct(strptime(paste(dat$Date,dat$Time), format="%d/%m/%Y %H:%M:%S"))
 
 # create png file
